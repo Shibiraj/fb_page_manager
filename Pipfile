@@ -8,6 +8,8 @@ django = "*"
 gunicorn = "*"
 psycopg2 = "*"
 whitenoise = "*"
+requests = "*"
+social-auth-app-django = "*"
 
 [requires]
 python_version = "3.6"
