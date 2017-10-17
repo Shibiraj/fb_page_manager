@@ -90,6 +90,12 @@ LOGIN_REDIRECT_URL = 'home'
 WSGI_APPLICATION = 'fb_page_manager.wsgi.application'
 
 
+# Honor the 'X-Forwarded-Proto' header for request.is_secure()
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Allow all host headers
+ALLOWED_HOSTS = ['*']
+
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
