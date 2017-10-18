@@ -15,7 +15,9 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from django.conf import settings
 from django.contrib.auth import views as auth_views
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 from fb_app import views
 
@@ -26,3 +28,9 @@ urlpatterns = [
     url(r'^oauth/', include('social_django.urls', namespace='social')),  # <--
     url(r'^admin/', admin.site.urls),
 ]
+
+urlpatterns += patterns('', (
+    r'^static/(?P<path>.*)$',
+    'django.views.static.serve',
+    {'document_root': settings.STATIC_ROOT}
+))
