@@ -11,7 +11,7 @@
     <meta name="author" content="">
     {% load static %}
 
-    <title>GrowthPlug Home</title>
+    <title>Sample App Home</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="{% static "vendor/bootstrap/css/bootstrap.min.css" %}" rel="stylesheet">
@@ -47,7 +47,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">GrowthPlug</a>
+                <a class="navbar-brand" href="#">Sample App </a>
             </div>
             <!-- /.navbar-header -->
 
@@ -55,7 +55,7 @@
                 <!-- /.dropdown -->
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        Hi Shibiraj
+                        Hi {{user.get_full_name}}
                         <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-user">
@@ -64,7 +64,7 @@
                         <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
                         </li>
                         <li class="divider"></li>
-                        <li><a href="#"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        <li><a href="{% url 'logout' %}?next=/"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
                         </li>
                     </ul>
                     <!-- /.dropdown-user -->
@@ -105,6 +105,25 @@
         </nav>
 
         <div id="page-wrapper">
+            {% if request.GET.st == '1' %}
+                <div class="row" style="padding-top: :5px">
+                    <div class="alert alert-success" id="success-alert">
+                        <button type="button" class="close" data-dismiss="alert">x</button>
+                        <strong>Success! </strong>
+                            Page information successfully updated.
+                    </div>
+                </div>
+            {% elif request.GET.st == '2' %}
+                <div class="row" style="padding-top: :5px">
+                    <div class="alert alert-success" id="success-alert">
+                        <button type="button" class="close" data-dismiss="alert">x</button>
+                        <strong>Failed! </strong>
+                            Page information updation failed.
+                    </div>
+                </div>
+            {% else %}
+            {{status}}
+            {% endif %}
             <div class="row">
                 <div class="col-lg-12">
                     <h2 style='text-align:center'>Listings</h2>
@@ -142,9 +161,9 @@
                                 <td>No</td>
                                 <td>&#10006;</td>
                                 <td>
-                                    <span id="id_action">
+                                    <span>
                                         <button class="btn btn-primary" data-toggle="modal"
-                                                                 data-target="#myModal">
+                                                                 data-target="#">
                                             Update
                                         </button>
                                     </span>
@@ -159,9 +178,9 @@
                                 <td>No</td>
                                 <td>&#10006;</td>
                                 <td>
-                                    <span id="id_action">
+                                    <span>
                                         <button class="btn btn-primary" data-toggle="modal"
-                                                                 data-target="#myModal">
+                                                                 data-target="#">
                                             Update
                                         </button>
                                     </span>
@@ -179,20 +198,27 @@
                             </tr>
                             <tr>
                                 <td>Facebook</td>
-                                <td>ABC Dental</td>
-                                <td>2101 California St</td>
-                                <td>111.111.1111</td>
-                                <td>2/5</td>
-                                <td>No</td>
-                                <td>&#10004;</td>
-                                <td>
-                                    <span id="id_action">
-                                        <button class="btn btn-primary" data-toggle="modal"
-                                                                 data-target="#myModal">
-                                            Update
-                                        </button>
-                                    </span>
-                                </td>
+                                {% if id %}
+                                    <td>{{name}}</td>
+                                    <td>{{single_line_address}}</td>
+                                    <td>{{phone}}</td>
+                                    <td>{% if overall_star_rating %} {{overall_star_rating}}/5 {% else %} {% endif %}</td>
+                                    <td>{% if listed %} Yes {% else %} No {% endif %}</td>
+                                    <td>{% if listed %} &#10004; {% else %} &#10006; {% endif %}</td>
+                                    <td>
+                                        {% if listed %}
+                                            <span  id="id_action">
+                                                <button class="btn btn-primary" data-toggle="modal"
+                                                                         data-target="#myModal">
+                                                    Update
+                                                </button>
+                                            </span>
+                                        {% else %}  
+                                        {% endif %}
+                                    </td>
+                                {% else %}
+                                    <td colspan="7" style="text-align: center"> Hi, You do not own any Facebook pages. <a href="https://www.facebook.com/pages/create" target="_blank">Click here</a> to create a new page.</td>
+                                {% endif %}
                             </tr>
                             </tbody>
                         </table>
@@ -207,6 +233,87 @@
     </div>
     <!-- /#wrapper -->
 
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Update Page Details</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form class="form-horizontal" role="form" id="id_page_info_form">
+                                {% csrf_token %}
+                                <input type="hidden" name="id" value="{{id}}">
+                                <input type="hidden" name="access_token" value="{{access_token}}">
+                                <fieldset>
+
+                                    <!-- Form Name -->
+                                    <legend>Page Details</legend>
+
+                                    <!-- Text input-->
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label" for="textinput">About</label>
+                                        <div class="col-sm-10">
+                                            <textarea placeholder="About Page" class="form-control" rows="5" name="about" id="id_about" required="required">{{about}}</textarea>
+                                        </div>
+                                    </div>
+                                    <!-- Text input-->
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label" for="textinput">Phone</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" placeholder="Phone" class="form-control" name="phone" id="id_phone" required="required" value="{{phone}}">
+                                        </div>
+                                    </div>
+                                    <!-- Text input-->
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label" for="textinput">Emails</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" placeholder="Emails" class="form-control" name="emails" id="id_emails" required="required" value="{{emails}}">
+                                        </div>
+                                    </div>
+                                    <!-- Text input-->
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label" for="textinput">Street</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" placeholder="Street" class="form-control" name="street" id="id_street" required="required" value="{{location.street}}">
+                                        </div>
+                                    </div>
+                                    <!-- Text input-->
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label" for="textinput">City</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" placeholder="City" class="form-control" name="city" id="id_city" required="required" value="{{location.city}}">
+                                        </div>
+                                    </div>
+                                    <!-- Text input-->
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label" for="textinput">Country</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" placeholder="Country" class="form-control" name="country" id="id_country" required="required" value="{{location.country}}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label" for="textinput">Zip Code</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" placeholder="Zip Code" class="form-control" name="zip" id="id_zip" required="required" value="{{location.zip}}">
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div><!-- /.col-lg-12 -->
+                    </div><!-- /.row -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" id="id_submit_btn">Save changes</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
     <!-- jQuery -->
     <script src="{% static "vendor/jquery/jquery.min.js" %}"></script>
 
@@ -218,6 +325,65 @@
 
     <!-- Custom Theme JavaScript -->
     <script src="{% static "vendor/js/sb-admin-2.js" %}"></script>
+    <script src="{% static "vendor/js/jquery.validate.js" %}"></script>
+    <script>
+        $(document).ready(function (){
+
+            $("#success-alert").fadeTo(2000, 500).slideUp(500, function(){
+               $("#success-alert").slideUp(500);
+            });   
+
+            $("#id_page_info_form").submit(function(e) {
+                e.preventDefault();
+            }).validate({
+                rules: {
+                    about: {
+                        required: true,
+                        minlength: 5
+                    },
+                    phone: {
+                        required: true,
+                        minlength: 5
+                    },
+                    emails: {
+                        required: true,
+                        minlength: 5,
+                    },
+                    street: {
+                        required: true,
+                        minlength: 3
+                    },
+                    city: {
+                        required: true,
+                        minlength: 2
+                    },
+                    country: {
+                        required: true,
+                        minlength: 2
+                    },
+                    zip: {
+                        required: true,
+                        minlength: 4
+                    }
+                },
+                submitHandler: function(form) { 
+                    $.ajax({
+                        url: '/update-page-info', 
+                        type: 'POST',
+                        data: $('#id_page_info_form').serialize(),
+                        success: function(data){
+                            window.location = '/?st='+data['success']
+                        }
+                    });
+                    return false;  //This doesn't prevent the form from submitting.
+                }
+            });
+             $("#id_submit_btn").on('click', function() {
+                $("#id_page_info_form").submit();
+            });
+        });
+
+    </script>
 
 </body>
 
