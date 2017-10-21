@@ -118,7 +118,7 @@
                     <div class="alert alert-success" id="success-alert">
                         <button type="button" class="close" data-dismiss="alert">x</button>
                         <strong>Failed! </strong>
-                            Page information updation failed.
+                            Page information updation failed. (request.GET.em)
                     </div>
                 </div>
             {% else %}
@@ -372,7 +372,7 @@
                         type: 'POST',
                         data: $('#id_page_info_form').serialize(),
                         success: function(data){
-                            window.location = '/?st='+data['success']
+                            window.location = '/?st='+data['success']+'&em='+data['eum']
                         }
                     });
                     return false;  //This doesn't prevent the form from submitting.

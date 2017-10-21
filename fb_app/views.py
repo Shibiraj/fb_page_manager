@@ -21,4 +21,5 @@ def update_page_info(request):
         access_token = social_user.extra_data['access_token']
         fb_page_manager = FacebookPageManager(access_token)
         data = fb_page_manager.update_page_info(request.POST)
-        return HttpResponse(json.dumps({'success' : 1 if data.get('success') else 2}), content_type="application/json")
+        error_user_msg = data.get('error').get('error_user_msg') if data.get('error') else ''
+        return HttpResponse(json.dumps({'success' : 1 if data.get('success') else 2, 'eum' : error_user_msg}), content_type="application/json")
