@@ -24,6 +24,7 @@ class FacebookPageManager(object):
             page_info.update({'listed' : True})
         else:
             page_info = {'listed' : False}
+        print('Page get info response ', page_info)
         return page_info
 
     def update_page_info(self, data):
@@ -32,4 +33,5 @@ class FacebookPageManager(object):
         payload = {'access_token': data.get('access_token'), 'about' : data.get('about',''),'phone' : data.get('phone',''), 'emails' : '["{}",]'.format(data.get('emails')), 'location' : location}
         url = '{}/{}/'.format(self.API_ENDPOINT, data.get('id'))
         resp = requests.post(url, params = payload)
+        print('Page update response ', resp.text)
         return json.loads(resp.text)
