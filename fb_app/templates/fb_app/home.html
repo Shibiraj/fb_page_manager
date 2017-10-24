@@ -289,12 +289,14 @@
                                         </div>
                                     </div>
                                     <!-- Text input-->
+                                    {% if located_in_us  %}
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label" for="textinput">State</label>
                                         <div class="col-sm-10">
                                             <input type="text" placeholder="State" class="form-control" name="state" id="id_state" required="required" value="{{location.state}}">
                                         </div>
                                     </div>
+                                    {% endif %}
                                     <!-- Text input-->
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label" for="textinput">Country</label>
