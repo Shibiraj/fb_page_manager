@@ -21,7 +21,7 @@ class FacebookPageManager(object):
             data = json.loads(resp.text)
             data.update({'emails' :','.join(data.get('emails', []))})
             page_info.update(data)
-            located_in_us = True if data.get('country','').strip().lower() in ['united states', 'usa', 'us', 'united states of america'] else False
+            located_in_us = True if data.get('location',{}).get('country','').strip().lower() in ['united states', 'usa', 'us', 'united states of america'] else False
             page_info.update({'listed' : True, 'located_in_us' : located_in_us})
         else:
             page_info = {'listed' : False}
