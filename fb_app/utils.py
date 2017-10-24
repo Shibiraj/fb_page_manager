@@ -29,7 +29,7 @@ class FacebookPageManager(object):
 
     def update_page_info(self, data):
         # updates facebook page information
-        location =  '{'+'"city": "{city}", "street": "{street}", "country": "{country}", "zip": "{zip}"'.format(city=data.get('city'),  "state": "{zip}"'.format(state=data.get('state'), street=data.get('street'), country=data.get('country'), zip=data.get('zip')) + '}'
+        location =  '{'+'"city": "{city}", "street": "{street}", "state": "{state}", "country": "{country}", "zip": "{zip}"'.format(city=data.get('city'), street=data.get('street'),  state=data.get('state'), country=data.get('country'), zip=data.get('zip')) + '}'
         payload = {'access_token': data.get('access_token'), 'about' : data.get('about',''),'phone' : data.get('phone',''), 'emails' : '["{}",]'.format(data.get('emails')), 'location' : location}
         url = '{}/{}/'.format(self.API_ENDPOINT, data.get('id'))
         resp = requests.post(url, params = payload)
